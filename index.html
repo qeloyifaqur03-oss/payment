@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Payment Receipt - USDT Ethereum</title>
+    <link rel="icon" href="/maxelpaylogo.png" type="image/png">
     <link rel="stylesheet" href="/styles.css">
     <script>
         (function() {
@@ -106,21 +107,21 @@
                     </div>
                     <div class="breakdown-row">
                         <span class="item-name">Promotion</span>
-                        <span class="item-amount">1000.00 USDT</span>
+                        <span class="item-amount" id="invoiceSubtotal">1000.00 USDT</span>
                     </div>
                     <div class="breakdown-row">
                         <span class="item-name">Fee</span>
-                        <span class="item-amount">$0.00</span>
+                        <span class="item-amount" id="invoiceFee">$0.00</span>
                     </div>
                 </div>
                 
                 <div class="total-section">
                     <span class="total-label">Total</span>
-                    <span class="total-amount">1000.00 USDT</span>
+                    <span class="total-amount" id="invoiceTotal">1000.00 USDT</span>
                 </div>
                 
                 <div class="transaction-meta">
-                    <span class="meta-item">Date: Jan 15, 2026</span>
+                    <span class="meta-item">Date: <span id="invoiceDate"></span></span>
                     <span class="meta-item">ID: <span id="dealIdDisplay"></span></span>
                 </div>
                 
@@ -145,7 +146,7 @@
         (function() {
             var TIMER_DURATION_MS = 30 * 60 * 1000;
 
-            // 1 код = 1 dealId (20 кодов, 20 уникальных dealId по 15 символов)
+            // 1 code = 1 dealId (20 codes, 20 unique 15-char dealIds)
             var CODE_TO_DEALID = {
                 'A7F3K9R2': 'A7F3K9R2P5Q8Z1M',
                 'P5Q8Z1M4': 'M4T9B6N2D7X3L8G',
@@ -173,7 +174,7 @@
                 if (CODE_TO_DEALID.hasOwnProperty(c)) DEALID_TO_CODE[CODE_TO_DEALID[c]] = c;
             }
 
-            // site.com/dealid/A7F3K9R2P5Q8Z1M — извлекаем dealId из path или hash
+            // site.com/dealid/A7F3K9R2P5Q8Z1M — get dealId from path or hash
             function getDealIdFromUrl() {
                 var path = location.pathname || '';
                 var hash = (location.hash || '').replace(/^#/, '');
