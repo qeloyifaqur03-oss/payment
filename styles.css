@@ -1,0 +1,584 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Deal code overlay */
+.deal-code-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+/* Hide overlay and unblur content when code was entered earlier (no flash on load) */
+html.deal-code-unlocked .deal-code-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+html.deal-code-unlocked .content-blurred {
+    filter: none;
+    pointer-events: auto;
+    user-select: auto;
+}
+
+.deal-code-overlay.deal-code-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.deal-code-panel {
+    background: #161421;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.deal-code-title {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.deal-code-subtitle {
+    color: #9ca3af;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.deal-code-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.deal-code-input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+}
+
+.deal-code-input::placeholder {
+    color: #6b7280;
+}
+
+.deal-code-input:focus {
+    border-color: #886CFD;
+}
+
+.deal-code-submit {
+    background: #886CFD;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.deal-code-submit:hover {
+    background: #6d4fd4;
+}
+
+.deal-code-error {
+    color: #f87171;
+    font-size: 13px;
+    margin-top: 8px;
+    min-height: 20px;
+    text-align: center;
+}
+
+.content-blurred {
+    filter: blur(6px);
+    pointer-events: none;
+    user-select: none;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #0f0e18;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.payment-card {
+    background: #161421;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    overflow: hidden;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Left Section */
+.left-section {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.logo-img {
+    height: 32px;
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+    display: block;
+    align-self: flex-start;
+}
+
+.info-text {
+    color: #9ca3af;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.qr-code {
+    width: 200px;
+    height: 200px;
+    background: white;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.qr-code canvas,
+.qr-code img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 6px;
+    display: block;
+}
+
+.qr-logo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+
+.sender-info,
+.recipient-info,
+.recipient-email {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    color: #9ca3af;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.sender-name {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sender-text {
+    color: #fff;
+}
+
+.sender-logo {
+    height: 20px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.verified-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 4px;
+    position: relative;
+    cursor: help;
+}
+
+.verified-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    padding: 6px 10px;
+    background: #1f2937;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 6px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.verified-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1f2937;
+}
+
+.verified-badge:hover .verified-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.verified-icon-img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    display: block;
+}
+
+.address {
+    color: #886CFD;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    text-decoration: underline;
+    word-break: break-all;
+}
+
+.address:hover {
+    opacity: 0.8;
+}
+
+.email-address {
+    color: #fff;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Right Section */
+.right-section {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.invoice-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.status-label {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.received {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.timer {
+    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.methods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.method-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.crypto-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+}
+
+.crypto-icon.usdt {
+    /* USDT icon styling */
+}
+
+.crypto-icon.ethereum {
+    /* Ethereum icon styling */
+}
+
+.method-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.method-name.usdt {
+    color: #fff;
+}
+
+.method-name.ethereum {
+    color: #fff;
+}
+
+.invoice-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.breakdown-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.breakdown-header .col-label:last-child {
+    text-align: right;
+}
+
+.breakdown-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.col-label {
+    color: #9ca3af;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.item-name {
+    color: #fff;
+    font-size: 14px;
+}
+
+.item-amount {
+    color: #fff;
+    font-size: 14px;
+    text-align: right;
+}
+
+.total-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.total-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.total-amount {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.transaction-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.receive-button {
+    background: #886CFD;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+
+.receive-button:hover {
+    background: #6d4fd4;
+}
+
+.receive-button:active {
+    transform: scale(0.98);
+}
+
+.button-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    text-align: center;
+}
+
+.footer-text {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.footer-link {
+    color: #886CFD;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.footer-link:hover {
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .left-section {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .invoice-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .status-container {
+        width: 100%;
+    }
+}

