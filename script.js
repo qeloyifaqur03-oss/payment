@@ -28,8 +28,8 @@ var DEAL_CONFIG = {
 function getDealIdFromUrl() {
     var path = typeof location !== 'undefined' && (location.pathname || '');
     var hash = (typeof location !== 'undefined' && (location.hash || '')) ? (location.hash || '').replace(/^#/, '') : '';
-    var raw = path && path.indexOf('/dealid/') !== -1 ? path : hash;
-    var match = raw && raw.match(/\/dealid\/([A-Za-z0-9]{15})\/?$/);
+    var raw = path && path.indexOf('/payment/') !== -1 ? path : hash;
+    var match = raw && raw.match(/\/payment\/([A-Za-z0-9]{15})\/?$/);
     return match ? match[1].toUpperCase() : null;
 }
 
@@ -75,8 +75,8 @@ function applyDealConfig() {
 function getPaymentSessionKey() {
     var path = typeof location !== 'undefined' && (location.pathname || '');
     var hash = (typeof location !== 'undefined' && (location.hash || '')) ? (location.hash || '').replace(/^#/, '') : '';
-    var raw = path && path.indexOf('/dealid/') !== -1 ? path : hash;
-    var match = raw && raw.match(/\/dealid\/([A-Za-z0-9]{15})\/?$/);
+    var raw = path && path.indexOf('/payment/') !== -1 ? path : hash;
+    var match = raw && raw.match(/\/payment\/([A-Za-z0-9]{15})\/?$/);
     return match ? 'maxelpay_paymentSession_' + match[1].toUpperCase() : 'maxelpay_paymentSession';
 }
 

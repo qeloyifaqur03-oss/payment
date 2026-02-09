@@ -1,6 +1,6 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/dealid/:path*", "destination": "/index.html" }
+    { "source": "/payment/:path*", "destination": "/index.html" }
   ]
 }

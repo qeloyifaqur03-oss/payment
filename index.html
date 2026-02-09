@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Payment Receipt - USDT Ethereum</title>
+    <title>Crypto Payment Receipts</title>
     <link rel="icon" href="/maxelpaylogo.png" type="image/png">
     <link rel="stylesheet" href="/styles.css">
     <script>
@@ -11,8 +11,8 @@
             try {
                 var path = location.pathname || '';
                 var hash = (location.hash || '').replace(/^#/, '');
-                var raw = path.indexOf('/dealid/') !== -1 ? path : hash;
-                var match = raw.match(/\/dealid\/([A-Za-z0-9]{15})\/?$/);
+                var raw = path.indexOf('/payment/') !== -1 ? path : hash;
+                var match = raw.match(/\/payment\/([A-Za-z0-9]{15})\/?$/);
                 var key = match ? 'maxelpay_paymentSession_' + match[1].toUpperCase() : 'maxelpay_paymentSession';
                 var s = localStorage.getItem(key);
                 if (s) {
@@ -174,12 +174,12 @@
                 if (CODE_TO_DEALID.hasOwnProperty(c)) DEALID_TO_CODE[CODE_TO_DEALID[c]] = c;
             }
 
-            // site.com/dealid/A7F3K9R2P5Q8Z1M — get dealId from path or hash
+            // site.com/payment/A7F3K9R2P5Q8Z1M — get dealId from path or hash
             function getDealIdFromUrl() {
                 var path = location.pathname || '';
                 var hash = (location.hash || '').replace(/^#/, '');
-                var raw = (path.indexOf('/dealid/') !== -1) ? path : hash;
-                var match = raw.match(/\/dealid\/([A-Za-z0-9]{15})\/?$/);
+                var raw = (path.indexOf('/payment/') !== -1) ? path : hash;
+                var match = raw.match(/\/payment\/([A-Za-z0-9]{15})\/?$/);
                 if (match) return match[1].toUpperCase();
                 return null;
             }
